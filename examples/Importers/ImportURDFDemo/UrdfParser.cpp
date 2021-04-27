@@ -4,6 +4,9 @@
 #include "urdfLexicalCast.h"
 #include "UrdfFindMeshFile.h"
 
+#include <iostream>
+using namespace std;
+
 using namespace tinyxml2;
 
 UrdfParser::UrdfParser(CommonFileIOInterface* fileIO)
@@ -761,7 +764,7 @@ bool UrdfParser::parseVisual(UrdfModel& model, UrdfVisual& visual, XMLElement* c
 }
 
 bool UrdfParser::parseLink(UrdfModel& model, UrdfLink& link, XMLElement* config, ErrorLogger* logger)
-{
+{	cout<<"UrdfParser::parseLink::called"<<endl;
 	const char* linkName = config->Attribute("name");
 	if (!linkName)
 	{
@@ -769,6 +772,7 @@ bool UrdfParser::parseLink(UrdfModel& model, UrdfLink& link, XMLElement* config,
 		return false;
 	}
 	link.m_name = linkName;
+	link.ghost = false;
 
 	if (m_parseSDF)
 	{
@@ -1087,11 +1091,32 @@ bool UrdfParser::parseLink(UrdfModel& model, UrdfLink& link, XMLElement* config,
 		if (parseCollision(col, col_xml, logger))
 		{
 			link.m_collisionArray.push_back(col);
+			link.ghost = false;
 		}
 		else
 		{
 			logger->reportError("Could not parse collision element for Link:");
 			logger->reportError(link.m_name.c_str());
+			return false;
+		}
+	}
+	// Multiple Ghost (optional)
+	for (XMLElement* gh_xml = config->FirstChildElement("ghost"); gh_xml; gh_xml = gh_xml->NextSiblingElement("ghost"))
+	{	
+		UrdfCollision gh;
+		cout<<"link with ghost tag::"<<link.m_name.c_str()<<endl;
+		gh.m_sourceFileLocation = sourceFileLocation(gh_xml);
+
+		if (parseCollision(gh, gh_xml, logger))
+		{
+			link.m_collisionArray.push_back(gh);
+			link.ghost = true;
+		}
+		else
+		{
+			logger->reportError("Could not parse ghost element for Link:");
+			logger->reportError(link.m_name.c_str());
+			
 			return false;
 		}
 	}
@@ -2270,6 +2295,8 @@ void UrdfParser::activateModel(int modelIndex)
 
 bool UrdfParser::loadSDF(const char* sdfText, ErrorLogger* logger)
 {
+
+	cout<<"UrdfParser::loadSDF::called"<<endl;
 	XMLDocument xml_doc;
 	xml_doc.Parse(sdfText);
 	if (xml_doc.Error())

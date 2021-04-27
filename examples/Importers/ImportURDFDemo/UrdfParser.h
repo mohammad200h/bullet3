@@ -151,6 +151,7 @@ struct UrdfLink
 	btTransform m_linkTransformInWorld;
 	btArray<UrdfVisual> m_visualArray;
 	btArray<UrdfCollision> m_collisionArray;
+	bool ghost;
 	UrdfLink* m_parentLink;
 	UrdfJoint* m_parentJoint;
 
