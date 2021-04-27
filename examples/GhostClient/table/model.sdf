@@ -1,0 +1,212 @@
+<?xml version='1.0'?>
+
+<sdf version="1.5">
+    <model name="table">
+        <static>true</static>
+        <link name = "world">
+            <pose frame=''>0 0 0 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0.0 0 0 0</pose>
+                <mass>0.0</mass>
+                <inertia>
+                    <ixx>0.</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.</izz>
+                </inertia>
+            </inertial>
+        </link>
+        <joint name="j_world" type="fixed">
+            <child>tableTop</child>
+            <parent>world</parent>
+        </joint>
+        <link name="tableTop">
+            <pose frame=''>0 0 0.73 1.57 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0.015 1.57 0 0</pose>
+                <mass>1</mass>
+                <inertia>
+                    <ixx>100</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>100</iyy>
+                    <iyz>0</iyz>
+                    <izz>100</izz>
+                </inertia>
+            </inertial>
+
+            <collision name="collision">
+                <geometry>
+                    <box>
+                        <size>1.25 0.03 2.0</size>
+                    </box>
+                </geometry>               
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>1.25 0.03 2.0</size>
+                    </box>
+                </geometry>  
+            </visual>
+        </link>
+
+        
+            <link name="topLeft" >
+                <pose frame=''>-0.605 -0.98 0.3775 0 0 0</pose>
+                <inertial>
+                    <pose frame=''>0.02 0.02 0.3575 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>100</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>100</iyy>
+                        <iyz>0</iyz>
+                        <izz>100</izz>
+                    </inertia>
+                </inertial>
+
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>               
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>  
+                </visual>
+            </link>
+            
+            <joint name="J_topLeft" type="fixed">
+                <child>topLeft</child>
+                <parent>tableTop</parent>
+                <!-- <pose frame=''>0 0 Leg_height 0 0 0</pose> -->
+            </joint>
+
+        
+            <link name="topRight" >
+                <pose frame=''>0.605 -0.98 0.3775 0 0 0</pose>
+                <inertial>
+                    <pose frame=''>0.02 0.02 0.3575 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>100</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>100</iyy>
+                        <iyz>0</iyz>
+                        <izz>100</izz>
+                    </inertia>
+                </inertial>
+
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>               
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>  
+                </visual>
+            </link>
+            
+            <joint name="J_topRight" type="fixed">
+                <child>topRight</child>
+                <parent>tableTop</parent>
+                <!-- <pose frame=''>0 0 Leg_height 0 0 0</pose> -->
+            </joint>
+
+        
+            <link name="buttomLeft" >
+                <pose frame=''>-0.605 0.98 0.3775 0 0 0</pose>
+                <inertial>
+                    <pose frame=''>0.02 0.02 0.3575 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>100</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>100</iyy>
+                        <iyz>0</iyz>
+                        <izz>100</izz>
+                    </inertia>
+                </inertial>
+
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>               
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>  
+                </visual>
+            </link>
+            
+            <joint name="J_buttomLeft" type="fixed">
+                <child>buttomLeft</child>
+                <parent>tableTop</parent>
+                <!-- <pose frame=''>0 0 Leg_height 0 0 0</pose> -->
+            </joint>
+
+        
+            <link name="buttomRight" >
+                <pose frame=''>0.605 0.98 0.3775 0 0 0</pose>
+                <inertial>
+                    <pose frame=''>0.02 0.02 0.3575 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>100</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>100</iyy>
+                        <iyz>0</iyz>
+                        <izz>100</izz>
+                    </inertia>
+                </inertial>
+
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>               
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.715</size>
+                        </box>
+                    </geometry>  
+                </visual>
+            </link>
+            
+            <joint name="J_buttomRight" type="fixed">
+                <child>buttomRight</child>
+                <parent>tableTop</parent>
+                <!-- <pose frame=''>0 0 Leg_height 0 0 0</pose> -->
+            </joint>
+
+        
+
+
+    </model>
+</sdf>

@@ -1,0 +1,180 @@
+<?xml version='1.0'?>
+<%
+require 'matrix'
+require 'erb'
+require 'yaml'
+
+class TableTop
+
+    attr_accessor :base
+    def initialize(height,width,thickness,length)
+        @base =  {  # object pose
+                "link_name" =>"table_top",
+                'pose'=> [0,0,height+thickness/2,1.57,0,0],
+                # inetia 
+                'pose_i'=> [0,0,thickness/2,1.57,0,0],                   
+                'mass'=> 1,
+                'ixx'=> 100 ,'ixy'=> 0     ,'ixz'=> 0 ,
+                'iyy'=> 100 ,'iyz'=> 0     ,'izz'=> 100,
+                'sizeDic'=>{"width"=>width,"thickness"=>thickness,"length"=>length},
+                "size" =>[width,thickness,length],
+                #color
+                "ambient"=>  [1,1,1,1],
+                "diffuse"=>  [1,1,1,1],
+                "specular"=> [1,1,1,1],
+                "emissive"=> [0, 0, 0, 1]
+            }   
+
+    end
+end
+
+class TableLeg
+
+    attr_accessor :base
+    def initialize(offset,width,thickness,length,height,name)
+        @base =  {  # object pose
+                "link_name" =>name,
+                'pose'=> [offset[0],offset[1],height/2+thickness/2,0,0,0],
+                # inetia 
+                'pose_i'=> [width/2,thickness/2,length/2,
+                                0,0,0],                   
+                'mass'=> 1,
+                'ixx'=> 100 ,'ixy'=> 0     ,'ixz'=> 0 ,
+                'iyy'=> 100 ,'iyz'=> 0     ,'izz'=> 100,
+                'size'=>[width,thickness,length],
+                #color
+                "ambient"=>  [1,1,1,1],
+                "diffuse"=>  [1,1,1,1],
+                "specular"=> [1,1,1,1],
+                "emissive"=> [0, 0, 0, 1]
+            }   
+
+    end
+end
+
+
+
+def a_to_s(v)#converts array to string
+    Array(v).join(" ")
+end
+
+
+#####################################Table setting######################
+
+tableTop = TableTop.new(0.715,1.25,0.03,2.00)
+
+Leg_width     = 0.04
+Leg_thickness = 0.04
+Leg_length    = 0.715
+Leg_height    =Leg_length
+
+# offset in x y
+topLeft_offset     =[tableTop.base["sizeDic"]["width"]/-2+0.02,tableTop.base["sizeDic"]["length"]/-2+0.02] 
+topRight_offset    =[tableTop.base["sizeDic"]["width"]/2-0.02 ,tableTop.base["sizeDic"]["length"]/-2+0.02]
+buttomLeft_offset  =[tableTop.base["sizeDic"]["width"]/-2+0.02,tableTop.base["sizeDic"]["length"]/2-0.02]
+buttomRight_offset =[tableTop.base["sizeDic"]["width"]/2-0.02 ,tableTop.base["sizeDic"]["length"]/2-0.02]
+
+topLeft      = TableLeg.new(topLeft_offset,Leg_width,Leg_thickness,Leg_length,Leg_height,"topLeft")
+topRight     = TableLeg.new(topRight_offset,Leg_width,Leg_thickness,Leg_length,Leg_height,"topRight")
+buttomLeft   = TableLeg.new(buttomLeft_offset,Leg_width,Leg_thickness,Leg_length,Leg_height,"buttomLeft")
+buttomRight  = TableLeg.new(buttomRight_offset,Leg_width,Leg_thickness,Leg_length,Leg_height,"buttomRight")
+
+legs =[topLeft,topRight,buttomLeft,buttomRight]
+
+%>
+<sdf version="1.5">
+    <model name="table">
+        <static>true</static>
+        <link name = "world">
+            <pose frame=''>0 0 0 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0.0 0 0 0</pose>
+                <mass>0.0</mass>
+                <inertia>
+                    <ixx>0.</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.</izz>
+                </inertia>
+            </inertial>
+        </link>
+        <joint name="j_world" type="fixed">
+            <child>tableTop</child>
+            <parent>world</parent>
+        </joint>
+        <link name="tableTop">
+            <pose frame=''><%=a_to_s(tableTop.base["pose"])%></pose>
+            <inertial>
+                <pose frame=''><%=a_to_s(tableTop.base["pose_i"])%></pose>
+                <mass><%=tableTop.base["mass"]%></mass>
+                <inertia>
+                    <ixx><%=tableTop.base["ixx"]%></ixx>
+                    <ixy><%=tableTop.base["ixy"]%></ixy>
+                    <ixz><%=tableTop.base["ixz"]%></ixz>
+                    <iyy><%=tableTop.base["iyy"]%></iyy>
+                    <iyz><%=tableTop.base["iyz"]%></iyz>
+                    <izz><%=tableTop.base["izz"]%></izz>
+                </inertia>
+            </inertial>
+
+            <collision name="collision">
+                <geometry>
+                    <box>
+                        <size><%=a_to_s(tableTop.base["size"])%></size>
+                    </box>
+                </geometry>               
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size><%=a_to_s(tableTop.base["size"])%></size>
+                    </box>
+                </geometry>  
+            </visual>
+        </link>
+
+        <%legs.each do |leg|%>
+            <link name="<%=leg.base['link_name']%>" >
+                <pose frame=''><%=a_to_s(leg.base["pose"])%></pose>
+                <inertial>
+                    <pose frame=''><%=a_to_s(leg.base["pose_i"])%></pose>
+                    <mass><%=leg.base["mass"]%></mass>
+                    <inertia>
+                        <ixx><%=leg.base["ixx"]%></ixx>
+                        <ixy><%=leg.base["ixy"]%></ixy>
+                        <ixz><%=leg.base["ixz"]%></ixz>
+                        <iyy><%=leg.base["iyy"]%></iyy>
+                        <iyz><%=leg.base["iyz"]%></iyz>
+                        <izz><%=leg.base["izz"]%></izz>
+                    </inertia>
+                </inertial>
+
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size><%=a_to_s(leg.base["size"])%></size>
+                        </box>
+                    </geometry>               
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size><%=a_to_s(leg.base["size"])%></size>
+                        </box>
+                    </geometry>  
+                </visual>
+            </link>
+            
+            <joint name="J_<%=leg.base['link_name']%>" type="fixed">
+                <child><%=leg.base['link_name']%></child>
+                <parent>tableTop</parent>
+                <!-- <pose frame=''>0 0 Leg_height 0 0 0</pose> -->
+            </joint>
+
+        <%end%>
+
+
+    </model>
+</sdf>

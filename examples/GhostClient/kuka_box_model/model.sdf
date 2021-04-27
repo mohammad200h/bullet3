@@ -1,0 +1,558 @@
+<?xml version="1.0" ?>
+
+    
+
+<sdf version='1.6'>
+  <model name="kuka_handlit">
+    <!--KUKA-->
+    <link name = "world">
+        <pose frame=''>0 0 0 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0 0.0 0 0 0</pose>
+            <mass>0.0</mass>
+            <inertia>
+                <ixx>0.</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.</iyy>
+                <iyz>0</iyz>
+                <izz>0.</izz>
+            </inertia>
+        </inertial>
+    </link>
+    <joint name="world" type="fixed">
+        <child>lbr_iiwa_link_0</child>
+        <parent>world</parent>
+    </joint>
+    
+    
+      <link name="lbr_iiwa_link_0">
+        <pose frame=''>0 0 0 0 0 0</pose>
+        <inertial>
+            <pose frame=''>-0.1 0 0.07 0 0 0</pose>
+            <mass>5</mass>
+            <inertia>
+                <ixx>0.05</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.06</iyy>
+                <iyz>0</iyz>
+                <izz>0.03</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_0_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_0.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_0_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_0.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.6626473642580232 0.463205621894593 0.8091742934005001 1</ambient>
+            <diffuse>0.2990716142906359 0.3174597696507889 0.21571927405496472 1</diffuse>
+            <specular>0.23681618589321862 0.4798757058973526 0.28354666884481117 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_1">
+        <pose frame=''>0 0 0.1575 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 -0.03 0.12 0 0 0</pose>
+            <mass>3.4525</mass>
+            <inertia>
+                <ixx>0.02183</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.007703</iyy>
+                <iyz>-0.003887</iyz>
+                <izz>0.02083</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_1_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_1.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_1_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_1.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.9690799330220133 0.7350027159733001 0.2221004227332647 1</ambient>
+            <diffuse>0.27371495414553926 0.47816648048234855 0.7820587986090228 1</diffuse>
+            <specular>0.8024281748729444 0.06701374752387246 0.8328792979218266 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_2">
+        <pose frame=''>0 0 0.34 1.5708 0 -3.14159</pose>
+        <inertial>
+            <pose frame=''>0.0003 0.059 0.042 0 0 0</pose>
+            <mass>3.4821</mass>
+            <inertia>
+                <ixx>0.02076</ixx>
+                <ixy>0</ixy>
+                <ixz>0.003626</ixz>
+                <iyy>0.02179</iyy>
+                <iyz>0</iyz>
+                <izz>0.00779</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_2_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_2.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_2_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_2.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.973618594019027 0.34077911306115405 0.6516829061620156 1</ambient>
+            <diffuse>0.30039478278405674 0.852002428268958 0.09732285136935304 1</diffuse>
+            <specular>0.04238511654595578 0.7589089544941069 0.22723824485793953 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_3">
+        <pose frame=''>0 0 0.524 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0.03 0.13 0 0 0</pose>
+            <mass>4.05623</mass>
+            <inertia>
+                <ixx>0.03204</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.00972</iyy>
+                <iyz>0.006227</iyz>
+                <izz>0.03042</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_3_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_3.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_3_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_3.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.4193192611581361 0.19561278843133068 0.3974188823482756 1</ambient>
+            <diffuse>0.24048568924914515 0.5093628442946905 0.9604854383307595 1</diffuse>
+            <specular>0.5806958640576643 0.862205672174469 0.304324043208983 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_4">
+        <pose frame=''>0 0 0.74 1.5708 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0.067 0.034 0 0 0</pose>
+            <mass>3.4822</mass>
+            <inertia>
+                <ixx>0.02178</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.02075</iyy>
+                <iyz>-0.003625</iyz>
+                <izz>0.007785</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_4_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_4.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_4_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_4.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.09442163356641298 0.48468726549542296 0.8044312307226361 1</ambient>
+            <diffuse>0.712816555473966 0.5772760136448782 0.06375702235871872 1</diffuse>
+            <specular>0.30106419276675567 0.634122158784747 0.5866768720483909 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_5">
+        <pose frame=''>0 0 0.9239999999999999 0 0 -3.14159</pose>
+        <inertial>
+            <pose frame=''>0.0001 0.021 0.076 0 0 0</pose>
+            <mass>2.1633</mass>
+            <inertia>
+                <ixx>0.01287</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.005708</iyy>
+                <iyz>-0.003946</iyz>
+                <izz>0.01112</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_5_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_5.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_5_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_5.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.14551339664922158 0.6003022882166348 0.7549340587086358 1</ambient>
+            <diffuse>0.980365626085815 0.8828056812960496 0.2760028849612144 1</diffuse>
+            <specular>0.421736869894788 0.14831568997809286 0.9934269832380175 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_6">
+        <pose frame=''>0 -0.0607 1.14 1.5708 0 -3.14159</pose>
+        <inertial>
+            <pose frame=''>0 0.0006 0.0004 0 0 0</pose>
+            <mass>2.3466</mass>
+            <inertia>
+                <ixx>0.006509</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.006259</iyy>
+                <iyz>0.00031891</iyz>
+                <izz>0.004527</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_6_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_6.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_6_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_6.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.778234729407183 0.5981186666894198 0.9551448246017099 1</ambient>
+            <diffuse>0.7242897339808376 0.13711582381131449 0.37898191687264215 1</diffuse>
+            <specular>0.44236638054334865 0.6287248332771223 0.739169121694495 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+      <link name="lbr_iiwa_link_7">
+        <pose frame=''>0 0 1.2205000000000001 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0.00043 0.071108 0 0 0</pose>
+            <mass>3.129</mass>
+            <inertia>
+                <ixx>0.145258</ixx>
+                <ixy>0.0005912</ixy>
+                <ixz>0</ixz>
+                <iyy>0.145283</iyy>
+                <iyz>-0.000503009</iyz>
+                <izz>0.0572184</izz>
+            </inertia>
+        </inertial>
+        <collision name='lbr_iiwa_link_7_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/collision/link_7.stl</uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lbr_iiwa_link_7_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>meshes/kuka/visual/link_7.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.7359306666743102 0.6695034254289416 0.24480995334897315 1</ambient>
+            <diffuse>0.13014889095532278 0.7677157931892422 0.019141738837031852 1</diffuse>
+            <specular>0.3653469380633946 0.5294130216432804 0.3059599829879036 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+    
+   
+    
+      <joint name="J0" type="revolute">
+        <child>lbr_iiwa_link_1</child>
+        <parent>lbr_iiwa_link_0</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.96706</lower>
+            <upper>2.96706</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J1" type="revolute">
+        <child>lbr_iiwa_link_2</child>
+        <parent>lbr_iiwa_link_1</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.0944</lower>
+            <upper>2.0944</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J2" type="revolute">
+        <child>lbr_iiwa_link_3</child>
+        <parent>lbr_iiwa_link_2</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.96706</lower>
+            <upper>2.96706</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J3" type="revolute">
+        <child>lbr_iiwa_link_4</child>
+        <parent>lbr_iiwa_link_3</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.0944</lower>
+            <upper>2.0944</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J4" type="revolute">
+        <child>lbr_iiwa_link_5</child>
+        <parent>lbr_iiwa_link_4</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.96706</lower>
+            <upper>2.96706</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J5" type="revolute">
+        <child>lbr_iiwa_link_6</child>
+        <parent>lbr_iiwa_link_5</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.0944</lower>
+            <upper>2.0944</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+      <joint name="J6" type="revolute">
+        <child>lbr_iiwa_link_7</child>
+        <parent>lbr_iiwa_link_6</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-3.05433</lower>
+            <upper>3.05433</upper>
+            <effort>300</effort>
+            <velocity>10</velocity>
+          </limit>
+          <dynamics>
+            <damping>0.5</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    
+
+    <!--extra link for kuka to match my setup for rviz -->
+    
+    <link name="lbr_iiwa_link_ee">
+        <pose frame=''>0 0 1.2200000000000002 0 0 0</pose>
+    </link>
+    <joint name="J7" type="fixed">
+        <child>lbr_iiwa_link_ee</child>
+        <parent>lbr_iiwa_link_7</parent>
+    </joint>
+
+
+    <link name="Box_ee">
+        <pose frame=''>0 0 1.3150000000000002 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0 0.035 0 0 0</pose>
+            <mass>0.2</mass>
+            <inertia>
+                <ixx>0.5</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.5</iyy>
+                <iyz>0</iyz>
+                <izz>0.5</izz>
+            </inertia>
+        </inertial>
+
+        <visual name="visual">
+            <geometry>
+                <box>
+                    <size>0.1 0.1 0.1</size>
+                </box>
+            </geometry>  
+        </visual>
+        <ghost name="ghost">
+            <geometry>
+                <box>
+                    <size>0.1 0.1 0.1</size>
+                </box>
+            </geometry>  
+        </ghost>
+    </link>
+
+    <joint name="cube" type="fixed">
+        <child>Box_ee</child>
+        <parent>lbr_iiwa_link_ee</parent>
+    </joint>
+ 
+   
+  </model>
+
+</sdf>

@@ -1,0 +1,694 @@
+<?xml version="1.0" ?>
+
+    <%
+
+require 'matrix'
+require 'erb'
+require 'yaml'
+
+
+    def a_to_s(v)#converts array to string
+      Array(v).join(" ")
+    end
+
+
+    class Kuka
+        attr_accessor :lbr_iiwa_link_0,:lbr_iiwa_link_1,:lbr_iiwa_link_2,:lbr_iiwa_link_3,:lbr_iiwa_link_4,:lbr_iiwa_link_5,:lbr_iiwa_link_6,:lbr_iiwa_link_7,:lbr_iiwa_link_ee,:mesh_v,:mesh_c,:model
+        def initialize(sim_env,load_setting)
+          @lbr_iiwa_link_0={
+            # link 
+            "link_name"     =>"lbr_iiwa_link_0",
+            'pose' =>[0,0,0,
+                    0,0,0],
+            #inertia
+            'pose_i'=>[-0.1,0,0.07,
+                       0,0,0],
+            'mass'=>5,
+            'ixx'=> 0.05 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.06 ,'iyz'=> 0     ,'izz'=>0.03,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [1,0,0,1],
+            'diffuse'  => [0.2,0.2,0.2,1.0],
+            'specular' => [0.4,0.4,0.4,1],
+            'emissive' => [0,0,0,0],
+              # joint 
+              "p_name"     =>"world",
+              "j_name"     =>"world",
+              "j_type"     =>"fixed"
+           
+          }
+          @lbr_iiwa_link_1={
+            #link
+            "link_name"       =>"lbr_iiwa_link_1",
+            'pose' =>[0,0,0.15+0.0075,
+                    0,0,0],
+            #inertia
+            'pose_i'=>[0,-0.03 ,0.12,
+                       0,0,0],
+            'mass'=>3.4525,
+            'ixx'=> 0.02183 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.007703 ,'iyz'=> -0.003887 ,'izz'=>0.02083,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [0.392, 0.549, 0.784,1],
+            'diffuse'  => [0.392, 0.549, 0.784,1],
+            'specular' => [0.392, 0.549, 0.784,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_0",
+            "j_name"     =>"J0",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.96706,2.96706], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_2={
+            #link
+            "link_name"       =>"lbr_iiwa_link_2",
+            'pose' =>[0,0,0.34,
+                     1.5708,0,-3.14159],
+            #inertia
+            'pose_i'=>[0.0003,0.059,0.042,
+                       0,0,0],
+            'mass'=>3.4821,
+            'ixx'=> 0.02076  ,'ixy'=> 0  ,'ixz'=> 0.003626 ,
+            'iyy'=> 0.02179 ,'iyz'=> 0   ,'izz'=>0.00779,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [0.392, 0.549, 0.784,1],
+            'diffuse'  => [0.392, 0.549, 0.784,1],
+            'specular' => [0.392, 0.549, 0.784,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_1",
+            "j_name"     =>"J1",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.0944,2.0944], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_3={
+            #link
+            "link_name"       =>"lbr_iiwa_link_3",
+            'pose' =>[0,0, 0.55-0.026,
+                    0,0,0],
+            #inertia
+            'pose_i'=>[0,0.03 ,0.13,
+                       0,0,0],
+            'mass'=>4.05623,
+            'ixx'=> 0.03204 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.00972 ,'iyz'=> 0.006227 ,'izz'=>0.03042,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [1.0 ,0.423529411765 ,0.0392156862745,1],
+            'diffuse'  => [1.0 ,0.423529411765 ,0.0392156862745 ,1.0],
+            'specular' => [1.0 ,0.423529411765 ,0.0392156862745 ,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_2",
+            "j_name"     =>"J2",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.96706,2.96706], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_4={
+            #link
+            "link_name"       =>"lbr_iiwa_link_4",
+            'pose' =>[0,0,0.74,
+                      1.5708,0,0],
+            #inertia
+            'pose_i'=>[0,0.067, 0.034,
+                      0,0,0],
+            'mass'=>3.4822,
+            'ixx'=> 0.02178 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.02075 ,'iyz'=> -0.003625     ,'izz'=>0.007785,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [0.392, 0.549, 0.784,1],
+            'diffuse'  => [0.392, 0.549, 0.784,1],
+            'specular' => [0.392, 0.549, 0.784,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_3",
+            "j_name"     =>"J3",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.0944,2.0944], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_5={
+            #link
+            "link_name"       =>"lbr_iiwa_link_5",
+            'pose' =>[0,0,0.95-0.026,
+                    0,0,-3.14159],
+            #inertia
+            'pose_i'=>[0.0001,0.021,0.076,
+                       0,0,0],
+            'mass'=>2.1633,
+            'ixx'=> 0.01287 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.005708 ,'iyz'=> -0.003946 ,'izz'=>0.01112,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [0.392, 0.549, 0.784,1],
+            'diffuse'  => [0.392, 0.549, 0.784,1],
+            'specular' => [0.392, 0.549, 0.784,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_4",
+            "j_name"     =>"J4",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.96706,2.96706], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_6={
+            #link
+            "link_name"       =>"lbr_iiwa_link_6",
+            'pose' =>[0,-0.0607,1.14,
+                      1.5708,0,-3.14159],
+            #inertia
+            'pose_i'=>[0,0.0006,0.0004,
+                       0,0,0],
+            'mass'=>2.3466,
+            'ixx'=> 0.006509 ,'ixy'=> 0     ,'ixz'=> 0 ,
+            'iyy'=> 0.006259 ,'iyz'=> 0.00031891 ,'izz'=>0.004527,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [1,0,0,1],
+            'diffuse'  => [1.0,0.423529411765,0.0392156862745,1.0],
+            'specular' => [0.5,0.5,0.5,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_5",
+            "j_name"     =>"J5",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-2.0944,2.0944], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_7={
+            #link
+            "link_name"       =>"lbr_iiwa_link_7",
+            'pose' =>[0,0,1.221-0.0005,
+                    0,0,0],
+            #inertia
+            'pose_i'=>[0,0.00043,0.071108,
+                       0,0,0],
+            'mass'=>5.229,
+            'ixx'=> 0.145258 ,'ixy'=> 0.0005912 ,'ixz'=> 0 ,
+            'iyy'=> 0.145283 ,'iyz'=> -0.000503009    ,'izz'=>0.0572184,
+            #mesh
+            'scale'=>[1,1,1],
+            #material
+            'ambient'  => [1.0 ,0.423529411765 ,0.0392156862745,1],
+            'diffuse'  => [1.0 ,0.423529411765 ,0.0392156862745 ,1.0],
+            'specular' => [1.0 ,0.423529411765 ,0.0392156862745 ,1],
+            'emissive' => [0,0,0,0],
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_6",
+            "j_name"     =>"J6",
+            "j_type"     =>"revolute",
+            "j_axis"     => [0,0,1],
+            "j_limit"    => [-3.05433,3.05433], #[lower,upper]
+            "j_effort"   => 300,
+            "j_velocity" => 10,
+            "j_damping"  => 0.5, 
+            "friction"   => 0,
+            "spring_reference" => 0,
+            "spring_stiffness" => 0
+          }
+          @lbr_iiwa_link_ee= {
+            #link
+            "link_name"   =>"lbr_iiwa_link_ee",
+            'pose' =>[@lbr_iiwa_link_7["pose"][0]+0,
+                      @lbr_iiwa_link_7["pose"][1]+0 ,
+                      @lbr_iiwa_link_7["pose"][2]+-0.0005,
+                      0,0,0], 
+            # joint 
+            "p_name"     =>"lbr_iiwa_link_7",
+            "j_name"     =>"J7",
+            "j_type"     =>"fixed",
+            "j_axis"     => [0,0,1]
+          }
+          @mesh_c ={}
+          @mesh_v ={}
+          path_c = {"lbr_iiwa_link_0"=>"meshes/kuka/collision/link_0.stl",
+                    "lbr_iiwa_link_1"=>"meshes/kuka/collision/link_1.stl",
+                    "lbr_iiwa_link_2"=>"meshes/kuka/collision/link_2.stl",
+                    "lbr_iiwa_link_3"=>"meshes/kuka/collision/link_3.stl",
+                    "lbr_iiwa_link_4"=>"meshes/kuka/collision/link_4.stl",
+                    "lbr_iiwa_link_5"=>"meshes/kuka/collision/link_5.stl",
+                    "lbr_iiwa_link_6"=>"meshes/kuka/collision/link_6.stl",
+                    "lbr_iiwa_link_7"=>"meshes/kuka/collision/link_7.stl"
+                   }
+          path_v = {"lbr_iiwa_link_0"=>"meshes/kuka/visual/link_0.stl",
+                    "lbr_iiwa_link_1"=>"meshes/kuka/visual/link_1.stl",
+                    "lbr_iiwa_link_2"=>"meshes/kuka/visual/link_2.stl",
+                    "lbr_iiwa_link_3"=>"meshes/kuka/visual/link_3.stl",
+                    "lbr_iiwa_link_4"=>"meshes/kuka/visual/link_4.stl",
+                    "lbr_iiwa_link_5"=>"meshes/kuka/visual/link_5.stl",
+                    "lbr_iiwa_link_6"=>"meshes/kuka/visual/link_6.stl",
+                    "lbr_iiwa_link_7"=>"meshes/kuka/visual/link_7.stl"
+                  }
+          @model= {
+                    "KUKA"=>{
+                            "Body"=>{
+                                "Links"=>{}
+                            }
+                    }
+                }
+          def loadYamlAndChange()
+              file = YAML.load_file("config.yml")
+              #print file 
+           
+                  
+              #print finger
+              link_list = [ @lbr_iiwa_link_0,@lbr_iiwa_link_1, @lbr_iiwa_link_2, @lbr_iiwa_link_3,
+                            @lbr_iiwa_link_4, @lbr_iiwa_link_5, @lbr_iiwa_link_6, @lbr_iiwa_link_7]
+              links = file["Kuka"]["Links"]
+              links.each do |linkName,link|
+  
+                  color = link["color"]
+                  mass  = link["mass"]
+                
+                    
+                 
+                  link_counter = 1
+  
+                  if linkName == "lbr_iiwa_link_0"
+                      #visual
+                      @lbr_iiwa_link_0["ambient"] = color["ambient"]
+                      @lbr_iiwa_link_0["diffuse"] = color["diffuse"]
+                      @lbr_iiwa_link_0["specular"] = color["specular"]
+                      @lbr_iiwa_link_0["emissive"] = color["emissive"]
+                      #physical prop
+                      @lbr_iiwa_link_0["mass"] = mass
+  
+  
+                  else
+                    joint = link["joint"]
+                    loop do
+                        if linkName == "lbr_iiwa_link_"+link_counter.to_s
+                            #visual
+                            link_list[link_counter]["ambient"] = color["ambient"]
+                            link_list[link_counter]["diffuse"] = color["diffuse"]
+                            link_list[link_counter]["specular"] = color["specular"]
+                            link_list[link_counter]["emissive"] = color["emissive"]
+                            #physical prop
+                            link_list[link_counter]["mass"] = mass
+                            link_list[link_counter]["j_damping"] = joint["damping"]
+                            link_list[link_counter]["j_friction"] = joint["friction"]
+                        end 
+                        if link_counter == link_list.length-1
+                            break
+                        end
+                        link_counter +=1
+                    end
+  
+                  end
+              end
+                
+              
+          end
+          def generate_model_forReset()
+            link_list = [ @lbr_iiwa_link_0,@lbr_iiwa_link_1,@lbr_iiwa_link_2,@lbr_iiwa_link_3,
+                          @lbr_iiwa_link_4,@lbr_iiwa_link_5,@lbr_iiwa_link_6,@lbr_iiwa_link_7]
+            i=0
+            loop do
+          
+                @model["KUKA"]["Body"]["Links"][link_list[i]["link_name"]]={ 
+        
+                        "mass"      =>link_list[i]["mass"],
+
+                        "color"     =>{
+                            'ambient'  => link_list[i]["ambient"] ,                                              
+                            'specular' => link_list[i]["specular"],
+                            'emissive' => link_list[i]["emissive"],
+                            'diffuse' => link_list[i]["diffuse"] 
+                        },
+                        "joint"     =>{
+
+                            "damping"     =>link_list[i]["j_damping"],
+                            "friction"      =>link_list[i]["j_friction"]
+
+                        }
+                    }
+                if i == link_list.length-1
+                 break
+                end
+                i +=1
+          
+            end
+        
+          end 
+          def generate_model()
+            link_list = [ @lbr_iiwa_link_0,@lbr_iiwa_link_1, @lbr_iiwa_link_2, @lbr_iiwa_link_3,
+                         @lbr_iiwa_link_4, @lbr_iiwa_link_5, @lbr_iiwa_link_6, @lbr_iiwa_link_7]
+            i=0
+            loop do
+                @model["KUKA"]["Body"]["Links"][link_list[i]["link_name"]] ={ 
+                                                    "link_name"  => link_list[i]["link_name"],
+                                                    "pose"      => link_list[i]["pose"],
+                                                    "mass"      =>link_list[i]["mass"],
+                                                    "inertial"  => {
+                                                        "pose_i" =>link_list[i]["pose_i"],
+                                                        "ixx"    =>link_list[i]["ixx"],
+                                                        "ixy"    =>link_list[i]["ixy"],
+                                                        "ixz"    =>link_list[i]["ixz"],
+                                                        "iyy"    =>link_list[i]["iyy"],
+                                                        "iyz"    =>link_list[i]["iyz"],
+                                                        "izz"    =>link_list[i]["izz"],
+                                                        
+                                                    },
+                                                   # "color"     =>{
+                                                   #     'ambient'  => link_list[i]["ambient"] ,                                              'diffuse'  => .6,1],
+                                                   #     'specular' => link_list[i]["specular"],
+                                                   #     'emissive' => link_list[i]["emissive"],
+                                                   #     'diffuse' => link_list[i]["diffuse"] 
+                                                   # },
+                                                    "joint"     =>{
+                                                        "p_name"    =>link_list[i]["p_name"],
+                                                        "j_name"    =>link_list[i]["j_name"],
+                                                        "j_type"    =>link_list[i]["j_type"],
+                                                        "j_axis"    =>link_list[i]["j_axis"],
+                                                        "j_limit"    =>link_list[i]["j_limit"],
+                                                        "j_effort"    =>link_list[i]["j_effort"],
+                                                        "j_velocity"    =>link_list[i]["j_velocity"],
+                                                        "j_damping"    =>link_list[i]["j_damping"],
+                                                        "friction"    =>link_list[i]["friction"]
+                                                        
+                                                    }
+                                               }
+               
+                if i ==7
+                    break
+                end
+                i +=1
+            end
+        
+          end
+          if load_setting == true
+            loadYamlAndChange()
+            generate_model()
+          else
+              generate_model_forReset()
+          end
+          if sim_env == "gazebo"
+            #model://+default path
+            path_c.each do |key,value|
+              @mesh_c.merge!({key => "model://kuka_handlit/"+value})
+            end
+            path_v.each do |key,value|
+              @mesh_v.merge!({key => "model://kuka_handlit/"+value})
+            end
+    
+          elsif sim_env == "pybullet"
+            #deafult path
+            @mesh_v = path_v
+            @mesh_c = path_c
+          else
+            puts "well life sucks!not everything is supported.A'nt life a bitch? "
+          end
+    
+    
+        end
+    end
+
+
+    class Cube
+      #constants
+      M_PI = 3.1415926535897931
+      attr_accessor :base,:texture
+      def initialize(sim_env,ee_pos,size)
+          @base =  {  # object pose
+                  "link_name" =>"Box_ee",
+                  'pose'=> [0+ee_pos["pose"][0],0+ee_pos["pose"][1],0+size[2]/2+ee_pos["pose"][2]+0.045,
+                            0,0,0],
+                  # inetia 
+                  'pose_i'=> [0,0,0.035,
+                                  0,0,0],                   
+                  'mass'=> 0.2,
+                  'ixx'=> 0.5 ,'ixy'=> 0     ,'ixz'=> 0 ,
+                  'iyy'=> 0.5 ,'iyz'=> 0     ,'izz'=> 0.5,
+                  'size'=>size,
+                  #color
+                  "ambient"=>  [1,1,1,1],
+                  "diffuse"=>  [1,1,1,1],
+                  "specular"=> [1,1,1,1],
+                  "emissive"=> [0, 0, 0, 1],
+                  # joint 
+                  "p_name"     =>ee_pos["link_name"],
+                  "j_name"     =>"cube",
+                  "j_type"     =>"fixed"
+              }   
+            
+          path_texture ={
+                  # "side1"   => "materials/textures/side.png",
+                  # "side2"   => "materials/textures/side.png",
+                  # "side3"   => "materials/textures/side.png",
+                  # "side4"   => "materials/textures/side.png",
+                  # "side5"   => "materials/textures/side.png",
+                  #"base"   => "materials/textures/side.png"
+              }
+          @texture={}
+            
+          if sim_env == "gazebo"
+              #model://+default path
+              path_texture.each do |key,value|
+                @texture.merge!({key => "model://cube/"+value})
+              end
+            
+          elsif sim_env == "pybullet"
+              #deafult path
+              @texture = path_texture
+          else
+              puts "Cube:   well life sucks!not everything is supported.A'nt life a bitch? "
+          end
+        
+        
+      end
+    end
+
+             
+    #sim env setting
+    sim_env ="pybullet" #change to pybullet|gazebo 
+    load_setting = true
+    load_ws = false
+    kuka = Kuka.new(sim_env,load_setting)
+    l_kuka =  [kuka.lbr_iiwa_link_0,kuka.lbr_iiwa_link_1,kuka.lbr_iiwa_link_2,kuka.lbr_iiwa_link_3,
+              kuka.lbr_iiwa_link_4,kuka.lbr_iiwa_link_5,kuka.lbr_iiwa_link_6,kuka.lbr_iiwa_link_7]
+    j_kuka = [kuka.lbr_iiwa_link_1,kuka.lbr_iiwa_link_2,kuka.lbr_iiwa_link_3,
+              kuka.lbr_iiwa_link_4,kuka.lbr_iiwa_link_5,kuka.lbr_iiwa_link_6,
+              kuka.lbr_iiwa_link_7]
+    #####################################hand setting######################
+    
+    #hand general variables
+    #constants
+    M_PI = 3.1415926535897931
+
+    cube = Cube.new(sim_env,kuka.lbr_iiwa_link_ee,[0.1,0.1,0.1])
+
+
+    #saving the model
+    def save_model(kuka)
+        robot_model = {"Robots"=>{
+
+                            "KUKA" =>kuka.model["KUKA"]    
+                    }
+        }
+        File.open("model_info.yml", "w") do |out|
+            YAML.dump( robot_model, out )
+             #{ |file| file.write(robot_model.to_yaml) }
+        end
+    end
+
+    save_model(kuka)
+    #resetting the setting in config yml
+    def rest_modelConfigYML(kuka)
+        robot_model = {
+                        "Kuka" =>kuka.model["KUKA"]["Body"]
+
+        }
+        File.open("config.yml", "w") do |out|
+            YAML.dump( robot_model, out )
+          
+        end
+    end
+    if load_setting == false
+        rest_modelConfigYML(kuka)
+    end
+      
+    %>
+
+<sdf version='1.6'>
+  <model name="kuka_handlit">
+    <!--KUKA-->
+    <link name = "world">
+        <pose frame=''>0 0 0 0 0 0</pose>
+        <inertial>
+            <pose frame=''>0 0 0.0 0 0 0</pose>
+            <mass>0.0</mass>
+            <inertia>
+                <ixx>0.</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>0.</iyy>
+                <iyz>0</iyz>
+                <izz>0.</izz>
+            </inertia>
+        </inertial>
+    </link>
+    <joint name="<%=kuka.lbr_iiwa_link_0['j_name']%>" type="<%=kuka.lbr_iiwa_link_0['j_type']%>">
+        <child><%=kuka.lbr_iiwa_link_0['link_name']%></child>
+        <parent><%=kuka.lbr_iiwa_link_0['p_name']%></parent>
+    </joint>
+    
+    <%l_kuka.each do |l|%>
+      <link name="<%=l['link_name']%>">
+        <pose frame=''><%=a_to_s(l['pose'])%></pose>
+        <inertial>
+            <pose frame=''><%=a_to_s(l['pose_i'])%></pose>
+            <mass><%=l['mass']%></mass>
+            <inertia>
+                <ixx><%=l['ixx']%></ixx>
+                <ixy><%=l['ixy']%></ixy>
+                <ixz><%=l['ixz']%></ixz>
+                <iyy><%=l['iyy']%></iyy>
+                <iyz><%=l['iyz']%></iyz>
+                <izz><%=l['izz']%></izz>
+            </inertia>
+        </inertial>
+        <collision name='<%=l['link_name']%>_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              
+              <scale><%=a_to_s(l['scale'])%></scale>
+              <uri><%=kuka.mesh_c[l['link_name']]%></uri>
+              
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='<%=l['link_name']%>_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale><%=a_to_s(l['scale'])%></scale>
+              <uri><%=kuka.mesh_v[l['link_name']]%></uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient><%=a_to_s(l['ambient'])%></ambient>
+            <diffuse><%=a_to_s(l['diffuse'])%></diffuse>
+            <specular><%=a_to_s(l['specular'])%></specular>
+            <emissive><%=a_to_s(l['emissive'])%></emissive>
+          </material>
+        </visual>
+      </link>
+    <%end%>
+   
+    <%j_kuka.each do |j|%>
+      <joint name="<%=j['j_name']%>" type="<%=j['j_type']%>">
+        <child><%=j['link_name']%></child>
+        <parent><%=j['p_name']%></parent>
+        <axis>
+          <xyz><%=a_to_s(j['j_axis'])%></xyz>
+          <limit>
+            <lower><%=j['j_limit'][0]%></lower>
+            <upper><%=j['j_limit'][1]%></upper>
+            <effort><%=j['j_effort']%></effort>
+            <velocity><%=j['j_velocity']%></velocity>
+          </limit>
+          <dynamics>
+            <damping><%=j['j_damping']%></damping>
+            <friction><%=j['friction']%></friction>
+            <spring_reference><%=j['spring_reference']%></spring_reference>
+            <spring_stiffness><%=j['spring_stiffness']%></spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+    <%end%>
+
+    <!--extra link for kuka to match my setup for rviz -->
+    
+    <link name="<%=kuka.lbr_iiwa_link_ee['link_name']%>">
+        <pose frame=''><%=a_to_s(kuka.lbr_iiwa_link_ee['pose'])%></pose>
+    </link>
+    <joint name="<%=kuka.lbr_iiwa_link_ee['j_name']%>" type="<%=kuka.lbr_iiwa_link_ee['j_type']%>">
+        <child><%=kuka.lbr_iiwa_link_ee['link_name']%></child>
+        <parent><%=kuka.lbr_iiwa_link_ee['p_name']%></parent>
+    </joint>
+
+
+    <link name="<%=cube.base['link_name']%>">
+        <pose frame=''><%=a_to_s(cube.base["pose"])%></pose>
+        <inertial>
+            <pose frame=''><%=a_to_s(cube.base["pose_i"])%></pose>
+            <mass><%=cube.base["mass"]%></mass>
+            <inertia>
+                <ixx><%=cube.base["ixx"]%></ixx>
+                <ixy><%=cube.base["ixy"]%></ixy>
+                <ixz><%=cube.base["ixz"]%></ixz>
+                <iyy><%=cube.base["iyy"]%></iyy>
+                <iyz><%=cube.base["iyz"]%></iyz>
+                <izz><%=cube.base["izz"]%></izz>
+            </inertia>
+        </inertial>
+
+        <visual name="visual">
+            <geometry>
+                <box>
+                    <size><%=a_to_s(cube.base["size"])%></size>
+                </box>
+            </geometry>  
+        </visual>
+    </link>
+
+    <joint name="<%=cube.base['j_name']%>" type="<%=cube.base['j_type']%>">
+        <child><%=cube.base['link_name']%></child>
+        <parent><%=cube.base['p_name']%></parent>
+    </joint>
+ 
+   
+  </model>
+
+</sdf>
