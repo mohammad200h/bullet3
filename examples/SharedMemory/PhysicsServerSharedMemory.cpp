@@ -14,6 +14,9 @@
 
 #include "PhysicsCommandProcessorInterface.h"
 
+#include <iostream>
+using namespace std;
+
 //number of shared memory blocks == number of simultaneous connections
 #define MAX_SHARED_MEMORY_BLOCKS 2
 
@@ -237,6 +240,7 @@ void PhysicsServerSharedMemory::reportNotifications()
 void PhysicsServerSharedMemory::processClientCommands()
 {
 	//handle client commands in any of the plugins
+	cout<<"PhysicsServerSharedMemory::processClientCommands"<<endl;
 	m_data->m_commandProcessor->processClientCommands();
 
 	//now handle the client commands from the shared memory

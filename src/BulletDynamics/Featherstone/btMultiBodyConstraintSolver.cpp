@@ -25,6 +25,9 @@ subject to the following restrictions:
 #include "BulletDynamics/Featherstone/btMultiBodySolverConstraint.h"
 #include "LinearMath/btScalar.h"
 
+
+#include <iostream>
+using namespace std;
 btScalar btMultiBodyConstraintSolver::solveSingleIteration(int iteration, btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer)
 {
 	btScalar leastSquaredResidual = btSequentialImpulseConstraintSolver::solveSingleIteration(iteration, bodies, numBodies, manifoldPtr, numManifolds, constraints, numConstraints, infoGlobal, debugDrawer);
@@ -215,9 +218,12 @@ btScalar btMultiBodyConstraintSolver::solveGroupCacheFriendlySetup(btCollisionOb
 	for (int i = 0; i < numBodies; i++)
 	{
 		const btMultiBodyLinkCollider* fcA = btMultiBodyLinkCollider::upcast(bodies[i]);
-		if (fcA)
+		const btMultiBodyLinkGhoster*  fgA = btMultiBodyLinkGhoster::upcast(bodies[i]);
+		if (fcA->m_multiBody)
 		{
 			fcA->m_multiBody->setCompanionId(-1);
+		}else{
+			fgA->m_multiBody->setCompanionId(-1);
 		}
 	}
 
@@ -1739,6 +1745,7 @@ btScalar btMultiBodyConstraintSolver::solveGroupCacheFriendlyFinish(btCollisionO
 
 void btMultiBodyConstraintSolver::solveMultiBodyGroup(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifold, int numManifolds, btTypedConstraint** constraints, int numConstraints, btMultiBodyConstraint** multiBodyConstraints, int numMultiBodyConstraints, const btContactSolverInfo& info, btIDebugDraw* debugDrawer, btDispatcher* dispatcher)
 {
+	cout<<"btMultiBodyConstraintSolver::solveMultiBodyGroup"<<endl;
 	//printf("solveMultiBodyGroup: numBodies=%d, numConstraints=%d, numManifolds=%d, numMultiBodyConstraints=%d\n", numBodies, numConstraints, numManifolds, numMultiBodyConstraints);
 
 	//printf("solveMultiBodyGroup start\n");

@@ -17,6 +17,11 @@
 #include <string>
 #include "Bullet3Common/b3Logging.h"
 
+
+
+#include "UrdfParser.h"
+#include <iostream>
+using namespace std;
 //static int bodyCollisionFilterGroup=btBroadphaseProxy::CharacterFilter;
 //static int bodyCollisionFilterMask=btBroadphaseProxy::AllFilter&(~btBroadphaseProxy::CharacterFilter);
 static bool enableConstraints = true;
@@ -611,50 +616,116 @@ btTransform ConvertURDF2BulletInternal(
 		{
 			//if (compoundShape->getNumChildShapes()>0)
 			{
-				btMultiBodyLinkCollider* col = creation.allocateMultiBodyLinkCollider(urdfLinkIndex, mbLinkIndex, cache.m_bulletMultiBody);
 
-				compoundShape->setUserIndex(graphicsIndex);
+				const UrdfModel* model = u2b.getUrdfModel();
+				UrdfLink* const* linkPtr =model->m_links.getAtIndex(urdfLinkIndex);
+				UrdfLink* link = *linkPtr;
+				string b = link->ghost==true? "true":"false";
+				bool ghost = link->ghost;
+				cout<<"link::name"<<link->m_name<<"is ghost"<<b<<endl;
+					btMultiBodyLinkCollider* col = creation.allocateMultiBodyLinkCollider(urdfLinkIndex, mbLinkIndex, cache.m_bulletMultiBody);
+					btMultiBodyLinkGhoster* col_ghost  = creation.allocateMultiBodyLinkGhoster(urdfLinkIndex, mbLinkIndex, cache.m_bulletMultiBody);
 
-				col->setCollisionShape(compoundShape);
+				//if not ghost
+				if(!ghost){
+					
+					compoundShape->setUserIndex(graphicsIndex);
 
-				if (compoundShape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
-				{
-					btBvhTriangleMeshShape* trimeshShape = (btBvhTriangleMeshShape*)compoundShape;
-					if (trimeshShape->getTriangleInfoMap())
+					col->setCollisionShape(compoundShape);
+
+					if (compoundShape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
+					{
+						btBvhTriangleMeshShape* trimeshShape = (btBvhTriangleMeshShape*)compoundShape;
+						if (trimeshShape->getTriangleInfoMap())
+						{
+							col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+						}
+					}
+
+					if (compoundShape->getShapeType() == TERRAIN_SHAPE_PROXYTYPE)
 					{
 						col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 					}
+
+					btTransform tr;
+					tr.setIdentity();
+					tr = linkTransformInWorldSpace;
+					//if we don't set the initial pose of the btCollisionObject, the simulator will do this
+					//when syncing the btMultiBody link transforms to the btMultiBodyLinkCollider
+
+					col->setWorldTransform(tr);
+
+					//base and fixed? -> static, otherwise flag as dynamic
+					bool isDynamic = (mbLinkIndex < 0 && cache.m_bulletMultiBody->hasFixedBase()) ? false : true;
+					int collisionFilterGroup = isDynamic ? int(btBroadphaseProxy::SensorTrigger) : int(btBroadphaseProxy::StaticFilter);
+					int collisionFilterMask = isDynamic ? int(btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger) : int(btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
+
+
+					int colGroup = 0, colMask = 0;
+					int collisionFlags = u2b.getCollisionGroupAndMask(urdfLinkIndex, colGroup, colMask);
+					if (collisionFlags & URDF_HAS_COLLISION_GROUP)
+					{
+						collisionFilterGroup = colGroup;
+					}
+					if (collisionFlags & URDF_HAS_COLLISION_MASK)
+					{
+						collisionFilterMask = colMask;
+					}
+					world1->addCollisionObject(col, collisionFilterGroup, collisionFilterMask);
+
+
 				}
+				else
+				{//if ghost
 
-				if (compoundShape->getShapeType() == TERRAIN_SHAPE_PROXYTYPE)
-				{
-					col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+					compoundShape->setUserIndex(graphicsIndex);
+
+					col_ghost->setCollisionShape(compoundShape);
+
+					if (compoundShape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
+					{
+						btBvhTriangleMeshShape* trimeshShape = (btBvhTriangleMeshShape*)compoundShape;
+						if (trimeshShape->getTriangleInfoMap())
+						{
+							col_ghost->setCollisionFlags(col_ghost->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+						}
+					}
+
+					if (compoundShape->getShapeType() == TERRAIN_SHAPE_PROXYTYPE)
+					{
+						col_ghost->setCollisionFlags(col_ghost->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+					}
+
+					btTransform tr;
+					tr.setIdentity();
+					tr = linkTransformInWorldSpace;
+					//if we don't set the initial pose of the btCollisionObject, the simulator will do this
+					//when syncing the btMultiBody link transforms to the btMultiBodyLinkCollider
+
+					col_ghost->setWorldTransform(tr);
+
+					//base and fixed? -> static, otherwise flag as dynamic
+					bool isDynamic = (mbLinkIndex < 0 && cache.m_bulletMultiBody->hasFixedBase()) ? false : true;
+					int collisionFilterGroup = isDynamic ? int(btBroadphaseProxy::SensorTrigger) : int(btBroadphaseProxy::StaticFilter);
+					int collisionFilterMask = isDynamic ? int(btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger) : int(btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
+
+
+					int colGroup = 0, colMask = 0;
+					int collisionFlags = u2b.getCollisionGroupAndMask(urdfLinkIndex, colGroup, colMask);
+					if (collisionFlags & URDF_HAS_COLLISION_GROUP)
+					{
+						collisionFilterGroup = colGroup;
+					}
+					if (collisionFlags & URDF_HAS_COLLISION_MASK)
+					{
+						collisionFilterMask = colMask;
+					}
+
+					btGhostPairCallback* ghostCall = new btGhostPairCallback();
+					world1->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(ghostCall);
+					world1->addCollisionObject(col_ghost, collisionFilterGroup, collisionFilterMask);
 				}
-
-				btTransform tr;
-				tr.setIdentity();
-				tr = linkTransformInWorldSpace;
-				//if we don't set the initial pose of the btCollisionObject, the simulator will do this
-				//when syncing the btMultiBody link transforms to the btMultiBodyLinkCollider
-
-				col->setWorldTransform(tr);
-
-				//base and fixed? -> static, otherwise flag as dynamic
-				bool isDynamic = (mbLinkIndex < 0 && cache.m_bulletMultiBody->hasFixedBase()) ? false : true;
-				int collisionFilterGroup = isDynamic ? int(btBroadphaseProxy::DefaultFilter) : int(btBroadphaseProxy::StaticFilter);
-				int collisionFilterMask = isDynamic ? int(btBroadphaseProxy::AllFilter) : int(btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
-
-				int colGroup = 0, colMask = 0;
-				int collisionFlags = u2b.getCollisionGroupAndMask(urdfLinkIndex, colGroup, colMask);
-				if (collisionFlags & URDF_HAS_COLLISION_GROUP)
-				{
-					collisionFilterGroup = colGroup;
-				}
-				if (collisionFlags & URDF_HAS_COLLISION_MASK)
-				{
-					collisionFilterMask = colMask;
-				}
-				world1->addCollisionObject(col, collisionFilterGroup, collisionFilterMask);
+				
 
 				btVector4 color2 = (flags & CUF_GOOGLEY_UNDEFINED_COLORS) ? selectColor2() : btVector4(1, 1, 1, 1);
 				btVector3 specularColor(1, 1, 1);
@@ -666,11 +737,19 @@ btTransform ConvertURDF2BulletInternal(
 				}
 				{
 					B3_PROFILE("createCollisionObjectGraphicsInstance2");
-					creation.createCollisionObjectGraphicsInstance2(urdfLinkIndex, col, color2, specularColor);
+					if(!ghost){
+						creation.createCollisionObjectGraphicsInstance2(urdfLinkIndex, col, color2, specularColor);
+					}else{
+						creation.createCollisionObjectGraphicsInstance2(urdfLinkIndex, col_ghost, color2, specularColor);
+					}
 				}
 				{
 					B3_PROFILE("convertLinkVisualShapes2");
-					u2b.convertLinkVisualShapes2(mbLinkIndex, urdfLinkIndex, pathPrefix, localInertialFrame, col, u2b.getBodyUniqueId());
+					if(!ghost){
+						u2b.convertLinkVisualShapes2(mbLinkIndex, urdfLinkIndex, pathPrefix, localInertialFrame, col, u2b.getBodyUniqueId());
+					}else{
+						u2b.convertLinkVisualShapes2(mbLinkIndex, urdfLinkIndex, pathPrefix, localInertialFrame, col_ghost, u2b.getBodyUniqueId());
+					}
 				}
 				URDFLinkContactInfo contactInfo;
 				u2b.getLinkContactInfo(urdfLinkIndex, contactInfo);
@@ -700,7 +779,15 @@ btTransform ConvertURDF2BulletInternal(
 						}
 
 					}
-					cache.m_bulletMultiBody->getLink(mbLinkIndex).m_collider = col;
+					//I am working on this
+					if(!ghost){
+						cache.m_bulletMultiBody->getLink(mbLinkIndex).m_collider = col;
+						cache.m_bulletMultiBody->getLink(mbLinkIndex).ghost_flag = false;
+					}else{
+						cache.m_bulletMultiBody->getLink(mbLinkIndex).m_ghoster = col_ghost;
+						cache.m_bulletMultiBody->getLink(mbLinkIndex).ghost_flag = true;
+					}
+					
 					if (flags & CUF_USE_SELF_COLLISION_INCLUDE_PARENT)
 					{
 						cache.m_bulletMultiBody->getLink(mbLinkIndex).m_flags &= ~BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION;
@@ -721,8 +808,11 @@ btTransform ConvertURDF2BulletInternal(
 							col->setCollisionFlags(col->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
 						}
 					}
-
-					cache.m_bulletMultiBody->setBaseCollider(col);
+					if(!ghost){
+						cache.m_bulletMultiBody->setBaseCollider(col);
+					}else{
+						cache.m_bulletMultiBody->setBaseGhoster(col_ghost);
+					}
 				}
 			}
 		}

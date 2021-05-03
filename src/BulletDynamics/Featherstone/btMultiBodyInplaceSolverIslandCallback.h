@@ -19,6 +19,9 @@
 #include "BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h"
 #include "btMultiBodyConstraintSolver.h"
 
+#include <iostream>
+using namespace std;
+
 SIMD_FORCE_INLINE int btGetConstraintIslandId2(const btTypedConstraint* lhs)
 {
     int islandId;
@@ -126,6 +129,8 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
     
     virtual void processIsland(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifolds, int numManifolds, int islandId)
     {
+
+        cout<<"MultiBodyInplaceSolverIslandCallback::processIsland"<<endl;
         if (islandId < 0)
         {
             ///we don't split islands, so all constraints/contact manifolds/bodies are passed into the solver regardless the island id
@@ -148,7 +153,7 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
             int i;
             
             //find the first constraint for this island
-            
+            cout<<"find the first constraint for this island"<<endl;
             for (i = 0; i < m_numConstraints; i++)
             {
                 if (btGetConstraintIslandId2(m_sortedConstraints[i]) == islandId)
@@ -158,6 +163,7 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
                 }
             }
             //count the number of constraints in this island
+             cout<<"count the number of constraints in this island"<<endl;
             for (; i < m_numConstraints; i++)
             {
                 if (btGetConstraintIslandId2(m_sortedConstraints[i]) == islandId)
@@ -175,6 +181,7 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
                 }
             }
             //count the number of multi body constraints in this island
+              cout<<"count the number of multi body constraints in this island"<<endl;
             for (; i < m_numMultiBodyConstraints; i++)
             {
                 if (btGetMultiBodyConstraintIslandId(m_multiBodySortedConstraints[i]) == islandId)
@@ -188,9 +195,13 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
             //    m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
             //} else
             {
+                cout<<"numBody::"<<numBodies<<endl;
                 for (i = 0; i < numBodies; i++)
 				{
+                    cout<<"numBody::i"<<i<<endl;
+                    cout<<"bodies[i]->getInternalType()"<<bodies[i]->getInternalType()<<endl;
 					bool isSoftBodyType = (bodies[i]->getInternalType() & btCollisionObject::CO_SOFT_BODY);
+                    cout<<"bool isSoftBodyType "<<(isSoftBodyType ? "true" : "false")<<endl;
 					if (!isSoftBodyType)
 					{
 						m_bodies.push_back(bodies[i]);
@@ -199,17 +210,24 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 					{
 						m_softBodies.push_back(bodies[i]);
 					}
+
 				}
+                cout<<"for (i = 0; i < numManifolds; i++)"<<endl;
                 for (i = 0; i < numManifolds; i++)
                     m_manifolds.push_back(manifolds[i]);
+
+                cout<<"(i = 0; i < numCurConstraints; i++)"<<endl; 
                 for (i = 0; i < numCurConstraints; i++)
                     m_constraints.push_back(startConstraint[i]);
                 
+
+                cout<<"(i = 0; i < numCurMultiBodyConstraints; i++)"<<endl; 
                 for (i = 0; i < numCurMultiBodyConstraints; i++)
                     m_multiBodyConstraints.push_back(startMultiBodyConstraint[i]);
                 
                 if ((m_multiBodyConstraints.size() + m_constraints.size() + m_manifolds.size()) > m_solverInfo->m_minimumSolverBatchSize)
                 {
+                    cout<<"processConstraints(islandId)"<<endl; 
                     processConstraints(islandId);
                 }
                 else
@@ -228,8 +246,9 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
         btMultiBodyConstraint** multiBodyConstraints = m_multiBodyConstraints.size() ? &m_multiBodyConstraints[0] : 0;
         
         //printf("mb contacts = %d, mb constraints = %d\n", mbContacts, m_multiBodyConstraints.size());
-        
+        cout<<"processConstraints::m_solver->solveMultiBodyGroup"<<endl;
         m_solver->solveMultiBodyGroup(bodies, m_bodies.size(), manifold, m_manifolds.size(), constraints, m_constraints.size(), multiBodyConstraints, m_multiBodyConstraints.size(), *m_solverInfo, m_debugDrawer, m_dispatcher);
+        cout<<"processConstraints::m_solver->solveMultiBodyGroup::ended"<<endl;
         if (m_bodies.size() && (m_solverInfo->m_reportSolverAnalytics&1))
         {
             m_solver->m_analyticsData.m_islandId = islandId;

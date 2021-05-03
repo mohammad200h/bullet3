@@ -124,6 +124,9 @@
 
 #include "BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h"
 
+#include <iostream>
+using namespace std;
+
 int gInternalSimFlags = 0;
 bool gResetSimulation = 0;
 int gVRTrackingObjectUniqueId = -1;
@@ -9495,6 +9498,7 @@ bool PhysicsServerCommandProcessor::processRequestCollisionInfoCommand(const str
 
 bool PhysicsServerCommandProcessor::processForwardDynamicsCommand(const struct SharedMemoryCommand& clientCmd, struct SharedMemoryStatus& serverStatusOut, char* bufferServerToClient, int bufferSizeInBytes)
 {
+	cout<<"PhysicsServerCommandProcessor::processForwardDynamicsCommand"<<endl;
 	bool hasStatus = true;
 
 	BT_PROFILE("CMD_STEP_FORWARD_SIMULATION");
@@ -14886,9 +14890,18 @@ void PhysicsServerCommandProcessor::addBodyChangedNotifications()
 			}
 			for (int linkIndex = 0; linkIndex < mb->getNumLinks(); linkIndex++)
 			{
-				if (mb->getLinkCollider(linkIndex)->isActive())
-				{
-					m_data->m_pluginManager.addNotification(createTransformChangedNotification(bodyUniqueId, linkIndex, mb->getLinkCollider(linkIndex)));
+				btMultibodyLink link = mb->getLink(linkIndex);
+				if(!link.ghost_flag){
+					if (mb->getLinkCollider(linkIndex)->isActive())
+					{
+						m_data->m_pluginManager.addNotification(createTransformChangedNotification(bodyUniqueId, linkIndex, mb->getLinkCollider(linkIndex)));
+					}
+				}else{
+					if (mb->getLinkGhoster(linkIndex)->isActive())
+					{
+						m_data->m_pluginManager.addNotification(createTransformChangedNotification(bodyUniqueId, linkIndex, mb->getLinkGhoster(linkIndex)));
+					}
+
 				}
 			}
 		}

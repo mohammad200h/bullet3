@@ -1,0 +1,18 @@
+{
+  "configurations": {
+      "Launch": {
+				"adapter":"vscode-cpptools",
+				"configuration":{
+					"request":"launch",
+					"program":"$HOME/bullet3/build/examples/GhostClient/App_GhostClient_d",
+					"args":[],
+					"cwd":"$workspaceRoot",
+					"enviornment":[],
+					"externalConsole":true,
+					"stopAtEntry":true,
+					"MIMode":"gdb"
+				}
+      }
+
+	}
+}

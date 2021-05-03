@@ -24,6 +24,11 @@ subject to the following restrictions:
 //#include <stdio.h>
 #include "LinearMath/btQuickprof.h"
 
+
+#include <iostream>
+using namespace std;
+
+
 btSimulationIslandManager::btSimulationIslandManager() : m_splitIslands(true)
 {
 }
@@ -195,6 +200,7 @@ public:
 
 void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher, btCollisionWorld* collisionWorld)
 {
+	cout<<"btSimulationIslandManager::buildIslands"<<endl;
 	BT_PROFILE("islandUnionFindAndQuickSort");
 
 	btCollisionObjectArray& collisionObjects = collisionWorld->getCollisionObjectArray();
@@ -342,12 +348,14 @@ void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher, btCollisi
 ///@todo: this is random access, it can be walked 'cache friendly'!
 void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher, btCollisionWorld* collisionWorld, IslandCallback* callback)
 {
+	cout<<"btSimulationIslandManager::buildAndProcessIslands"<<endl;
 	buildIslands(dispatcher, collisionWorld);
     processIslands(dispatcher, collisionWorld, callback);
 }
 
 void btSimulationIslandManager::processIslands(btDispatcher* dispatcher, btCollisionWorld* collisionWorld, IslandCallback* callback)
 {
+	cout<<"btSimulationIslandManager::processIslands"<<endl;
     btCollisionObjectArray& collisionObjects = collisionWorld->getCollisionObjectArray();
 	int endIslandIndex = 1;
 	int startIslandIndex;
@@ -392,22 +400,29 @@ void btSimulationIslandManager::processIslands(btDispatcher* dispatcher, btColli
 		//int islandId;
 
 		//	printf("Start Islands\n");
-
+		int counter = 0;
+		int counter_two =0;
+		cout<<"btSimulationIslandManager::processIslands::traverse the simulation islands, and call the solver, unless all objects are sleeping/deactivated"<<endl;
 		//traverse the simulation islands, and call the solver, unless all objects are sleeping/deactivated
 		for (startIslandIndex = 0; startIslandIndex < numElem; startIslandIndex = endIslandIndex)
 		{
+			counter +=1;
+			cout<<"counter::"<<counter<<endl;
 			int islandId = getUnionFind().getElement(startIslandIndex).m_id;
 
 			bool islandSleeping = true;
-
+			cout<<"inner for loop"<<endl;
 			for (endIslandIndex = startIslandIndex; (endIslandIndex < numElem) && (getUnionFind().getElement(endIslandIndex).m_id == islandId); endIslandIndex++)
 			{
+				// counter_two +=1;
+				// cout<<"counter_two"<<counter_two<<endl;
 				int i = getUnionFind().getElement(endIslandIndex).m_sz;
 				btCollisionObject* colObj0 = collisionObjects[i];
 				m_islandBodies.push_back(colObj0);
 				if (colObj0->isActive())
 					islandSleeping = false;
 			}
+			cout<<"inner for loop::done"<<endl;
 
 			//find the accompanying contact manifold for this islandId
 			int numIslandManifolds = 0;
@@ -427,17 +442,21 @@ void btSimulationIslandManager::processIslands(btDispatcher* dispatcher, btColli
 					numIslandManifolds = endManifoldIndex - startManifoldIndex;
 				}
 			}
+			cout<<"if (startManifoldIndex < numManifolds)::done"<<endl;
 
 			if (!islandSleeping)
 			{
+				cout<<"inside::!islandSleeping"<<endl;
 				callback->processIsland(&m_islandBodies[0], m_islandBodies.size(), startManifold, numIslandManifolds, islandId);
 				//			printf("Island callback of size:%d bodies, %d manifolds\n",islandBodies.size(),numIslandManifolds);
 			}
+			cout<<"if (!islandSleeping)::done"<<endl;
 
 			if (numIslandManifolds)
 			{
 				startManifoldIndex = endManifoldIndex;
 			}
+			cout<<"if (numIslandManifolds)::done"<<endl;
 
 			m_islandBodies.resize(0);
 		}

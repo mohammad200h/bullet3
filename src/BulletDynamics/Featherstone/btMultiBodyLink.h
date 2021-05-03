@@ -130,7 +130,9 @@ struct btMultibodyLink
 	btScalar m_jointTorque[6];
 
 	class btMultiBodyLinkCollider *m_collider;
+	class btMultiBodyLinkGhoster *m_ghoster;
 	int m_flags;
+	bool ghost_flag;
 
 	int m_dofCount, m_posVarCount;  //redundant but handy
 
@@ -159,7 +161,9 @@ struct btMultibodyLink
 		  m_cachedRotParentToThis(0, 0, 0, 1),
           m_cachedRotParentToThis_interpolate(0, 0, 0, 1),
 		  m_collider(0),
+		  m_ghoster(0),
 		  m_flags(0),
+		  ghost_flag(false),
 		  m_dofCount(0),
 		  m_posVarCount(0),
 		  m_jointType(btMultibodyLink::eInvalid),

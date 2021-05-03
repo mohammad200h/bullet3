@@ -23,6 +23,11 @@ subject to the following restrictions:
 #include "LinearMath/btIDebugDraw.h"
 #include "LinearMath/btSerializer.h"
 
+
+#include <iostream>
+using namespace std;
+
+
 void btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
 {
 	m_multiBodies.push_back(body);
@@ -46,6 +51,7 @@ void btMultiBodyDynamicsWorld::calculateSimulationIslands()
 	getSimulationIslandManager()->updateActivationState(getCollisionWorld(), getCollisionWorld()->getDispatcher());
 
 	{
+        cout<<"btMultiBodyDynamicsWorld::calculateSimulationIslands::merge islands based on speculative contact manifolds too"<<endl;
 		//merge islands based on speculative contact manifolds too
 		for (int i = 0; i < this->m_predictiveManifolds.size(); i++)
 		{
@@ -63,6 +69,7 @@ void btMultiBodyDynamicsWorld::calculateSimulationIslands()
 	}
 
 	{
+        cout<<"btMultiBodyDynamicsWorld::calculateSimulationIslands::working out contraints"<<endl;
 		int i;
 		int numConstraints = int(m_constraints.size());
 		for (i = 0; i < numConstraints; i++)
@@ -83,29 +90,61 @@ void btMultiBodyDynamicsWorld::calculateSimulationIslands()
 	}
 
 	//merge islands linked by Featherstone link colliders
+    cout<<"btMultiBodyDynamicsWorld::merge islands linked by Featherstone link colliders"<<endl;
+    cout<<" m_multiBodies.size()::"<< m_multiBodies.size()<<endl;
 	for (int i = 0; i < m_multiBodies.size(); i++)
 	{
+        cout<<"i::"<<i<<endl;
 		btMultiBody* body = m_multiBodies[i];
 		{
 			btMultiBodyLinkCollider* prev = body->getBaseCollider();
-
+            cout<<"	btMultiBodyLinkCollider* prev = body->getBaseCollider();"<<i<<endl;
+            cout<<"body->getNumLinks()::"<<body->getNumLinks()<<endl;
 			for (int b = 0; b < body->getNumLinks(); b++)
 			{
-				btMultiBodyLinkCollider* cur = body->getLink(b).m_collider;
+                cout<<"link num::"<<b<<endl;
+                cout<<"body->getLink(b).m_linkName  "<<body->getLink(b).m_linkName<<endl;
+                bool ghost = body->getLink(b).ghost_flag;
+                
+              
+				// btMultiBodyLinkCollider* cur = body->getLink(b).m_collider;
+                if(!ghost){
+                    btMultiBodyLinkCollider* cur = body->getLink(b).m_collider;
+                    cout<<"collider::called"<<endl;
+				    if (((cur) && (!(cur)->isStaticOrKinematicObject())) &&
+				    	((prev) && (!(prev)->isStaticOrKinematicObject())))
+				    {
+				    	int tagPrev = prev->getIslandTag();
+				    	int tagCur = cur->getIslandTag();
+				    	getSimulationIslandManager()->getUnionFind().unite(tagPrev, tagCur);
+				    }
+				    if (cur && !cur->isStaticOrKinematicObject())
+				    	prev = cur;
+                }else{
+                    btMultiBodyLinkGhoster* cur = body->getLink(b).m_ghoster;
+                    cout<<"collider::called"<<endl;
+				    if (((cur) && (!(cur)->isStaticOrKinematicObject())) &&
+				    	((prev) && (!(prev)->isStaticOrKinematicObject())))
+				    {
+				    	int tagPrev = prev->getIslandTag();
+				    	int tagCur = cur->getIslandTag();
+				    	getSimulationIslandManager()->getUnionFind().unite(tagPrev, tagCur);
+				    }
 
-				if (((cur) && (!(cur)->isStaticOrKinematicObject())) &&
-					((prev) && (!(prev)->isStaticOrKinematicObject())))
-				{
-					int tagPrev = prev->getIslandTag();
-					int tagCur = cur->getIslandTag();
-					getSimulationIslandManager()->getUnionFind().unite(tagPrev, tagCur);
-				}
-				if (cur && !cur->isStaticOrKinematicObject())
-					prev = cur;
+                    //mamad::probably need to deal with this
+				    // if (cur && !cur->isStaticOrKinematicObject())
+				    // 	prev = cur;
+                }
+
+
+
+            cout<<"loop ended"<<endl;
 			}
+            
 		}
 	}
 
+    cout<<"btMultiBodyDynamicsWorld::merge islands linked by multibody constraints"<<endl;
 	//merge islands linked by multibody constraints
 	{
 		for (int i = 0; i < this->m_multiBodyConstraints.size(); i++)
@@ -215,6 +254,7 @@ void btMultiBodyDynamicsWorld::forwardKinematics()
 }
 void btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 {
+    cout<<"btMultiBodyDynamicsWorld::solveConstraints"<<endl;
     solveExternalForces(solverInfo);
     buildIslands();
     solveInternalConstraints(solverInfo);
@@ -222,11 +262,14 @@ void btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 
 void btMultiBodyDynamicsWorld::buildIslands()
 {
+    cout<<"btMultiBodyDynamicsWorld::buildIslands"<<endl;
     m_islandManager->buildAndProcessIslands(getCollisionWorld()->getDispatcher(), getCollisionWorld(), m_solverMultiBodyIslandCallback);
+    cout<<"btMultiBodyDynamicsWorld::buildIslands::done"<<endl;
 }
 
 void btMultiBodyDynamicsWorld::solveInternalConstraints(btContactSolverInfo& solverInfo)
 {
+    cout<<"btMultiBodyDynamicsWorld::solveInternalConstraints"<<endl;
 	/// solve all the constraints for this island
 	m_solverMultiBodyIslandCallback->processConstraints();
 	m_constraintSolver->allSolved(solverInfo, m_debugDrawer);
@@ -280,6 +323,7 @@ void btMultiBodyDynamicsWorld::solveInternalConstraints(btContactSolverInfo& sol
 
 void btMultiBodyDynamicsWorld::solveExternalForces(btContactSolverInfo& solverInfo)
 {
+    cout<<"btMultiBodyDynamicsWorld::solveExternalForces"<<endl;
     forwardKinematics();
     
     BT_PROFILE("solveConstraints");

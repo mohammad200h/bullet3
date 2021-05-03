@@ -26,6 +26,9 @@ subject to the following restrictions:
 //#include <stdio.h>
 #include "LinearMath/btQuickprof.h"
 
+#include <iostream>
+using namespace std;
+
 SIMD_FORCE_INLINE int calcBatchCost(int bodies, int manifolds, int constraints)
 {
 	// rough estimate of the cost of a batch, used for merging
@@ -627,6 +630,7 @@ void btSimulationIslandManagerMt::buildAndProcessIslands(btDispatcher* dispatche
 														 btAlignedObjectArray<btTypedConstraint*>& constraints,
 														 const SolverParams& solverParams)
 {
+	cout<<"btSimulationIslandManagerMt::buildAndProcessIslands"<<endl;
 	BT_PROFILE("buildAndProcessIslands");
 	btCollisionObjectArray& collisionObjects = collisionWorld->getCollisionObjectArray();
 

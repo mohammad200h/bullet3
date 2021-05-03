@@ -47,6 +47,11 @@ class btMultiBodyLinkCollider* MyMultiBodyCreator::allocateMultiBodyLinkCollider
 	btMultiBodyLinkCollider* mbCol = new btMultiBodyLinkCollider(multiBody, mbLinkIndex);
 	return mbCol;
 }
+class btMultiBodyLinkGhoster* MyMultiBodyCreator::allocateMultiBodyLinkGhoster(int /*urdfLinkIndex*/, int mbLinkIndex, btMultiBody* multiBody)
+{
+	btMultiBodyLinkGhoster* mbCol = new btMultiBodyLinkGhoster(multiBody, mbLinkIndex);
+	return mbCol;
+}
 
 class btGeneric6DofSpring2Constraint* MyMultiBodyCreator::allocateGeneric6DofSpring2Constraint(int urdfLinkIndex, btRigidBody& rbA /*parent*/, btRigidBody& rbB, const btTransform& offsetInA, const btTransform& offsetInB, int rotateOrder)
 {

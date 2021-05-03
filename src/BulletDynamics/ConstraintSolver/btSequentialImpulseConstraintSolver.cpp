@@ -41,6 +41,10 @@ int gNumSplitImpulseRecoveries = 0;
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
+
+#include <iostream>
+using namespace std;
+
 //#define VERBOSE_RESIDUAL_PRINTF 1
 ///This is the scalar reference implementation of solving a single constraint row, the innerloop of the Projected Gauss Seidel/Sequential Impulse constraint solver
 ///Below are optional SSE2 and SSE4/FMA3 versions. We assume most hardware has SSE2. For SSE4/FMA3 we perform a CPU feature check.
@@ -1402,6 +1406,7 @@ void btSequentialImpulseConstraintSolver::convertBodies(btCollisionObject** bodi
 
 btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlySetup(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer)
 {
+	cout<<"btSequentialImpulseConstraintSolver::solveGroupCacheFriendlySetup"<<endl;
 	m_fixedBodyId = -1;
 	BT_PROFILE("solveGroupCacheFriendlySetup");
 	(void)debugDrawer;
@@ -1729,6 +1734,7 @@ void btSequentialImpulseConstraintSolver::solveGroupCacheFriendlySplitImpulseIte
 
 btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlyIterations(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer)
 {
+	cout<<"btSequentialImpulseConstraintSolver::solveGroupCacheFriendlyIterations"<<endl;
 	BT_PROFILE("solveGroupCacheFriendlyIterations");
 
 	{
@@ -1835,6 +1841,7 @@ void btSequentialImpulseConstraintSolver::writeBackBodies(int iBegin, int iEnd, 
 
 btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlyFinish(btCollisionObject** bodies, int numBodies, const btContactSolverInfo& infoGlobal)
 {
+	cout<<"btSequentialImpulseConstraintSolver::solveGroupCacheFriendlyFinish"<<endl;
 	BT_PROFILE("solveGroupCacheFriendlyFinish");
 
 	if (infoGlobal.m_solverMode & SOLVER_USE_WARMSTARTING)
@@ -1857,8 +1864,13 @@ btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlyFinish(btCo
 /// btSequentialImpulseConstraintSolver Sequentially applies impulses
 btScalar btSequentialImpulseConstraintSolver::solveGroup(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer, btDispatcher* /*dispatcher*/)
 {
+
+	cout<<"btSequentialImpulseConstraintSolver::solveGroup"<<endl;
 	BT_PROFILE("solveGroup");
 	//you need to provide at least some bodies
+	cout<<"btSequentialImpulseConstraintSolver::solveGroup::solveGroupCacheFriendlySetup"<<endl;
+
+
 
 	solveGroupCacheFriendlySetup(bodies, numBodies, manifoldPtr, numManifolds, constraints, numConstraints, infoGlobal, debugDrawer);
 

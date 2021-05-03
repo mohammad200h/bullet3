@@ -45,6 +45,7 @@
 
 #include "btMultiBodyLink.h"
 class btMultiBodyLinkCollider;
+class btMultiBodyLinkGhoster;
 
 ATTRIBUTE_ALIGNED16(class)
 btMultiBody
@@ -125,6 +126,10 @@ public:
 	{
 		m_baseCollider = collider;
 	}
+	void setBaseGhoster(btMultiBodyLinkGhoster * collider)  //collider can be NULL to disable collision for the base
+	{
+		m_baseGhoster = collider;
+	}
 	const btMultiBodyLinkCollider *getBaseCollider() const
 	{
 		return m_baseCollider;
@@ -133,6 +138,18 @@ public:
 	{
 		return m_baseCollider;
 	}
+	
+	const btMultiBodyLinkGhoster *getBaseGhoster() const
+	{
+		return m_baseGhoster;
+	}
+	btMultiBodyLinkGhoster *getBaseGhoster()
+	{
+		return m_baseGhoster;
+	}
+
+
+
 
 	const btMultiBodyLinkCollider *getLinkCollider(int index) const
 	{
@@ -151,6 +168,27 @@ public:
 		}
 		return 0;
 	}
+
+
+		const btMultiBodyLinkGhoster *getLinkGhoster(int index) const
+	{
+		if (index >= 0 && index < getNumLinks())
+		{
+			return getLink(index).m_ghoster;
+		}
+		return 0;
+	}
+
+	btMultiBodyLinkGhoster *getLinkGhoster(int index)
+	{
+		if (index >= 0 && index < getNumLinks())
+		{
+			return getLink(index).m_ghoster;
+		}
+		return 0;
+	}
+
+
 
 	//
 	// get parent
@@ -749,6 +787,7 @@ private:
 
 private:
 	btMultiBodyLinkCollider *m_baseCollider;  //can be NULL
+	btMultiBodyLinkGhoster  *m_baseGhoster;
 	const char *m_baseName;                   //memory needs to be manager by user!
 
 	btVector3 m_basePos;      // position of COM of base (world frame)
@@ -862,6 +901,7 @@ struct btMultiBodyLinkDoubleData
 	char *m_linkName;
 	char *m_jointName;
 	btCollisionObjectDoubleData *m_linkCollider;
+	
 	char *m_paddingPtr;
 };
 
@@ -915,6 +955,7 @@ struct btMultiBodyDoubleData
 	char *m_baseName;
 	btMultiBodyLinkDoubleData *m_links;
 	btCollisionObjectDoubleData *m_baseCollider;
+	btCollisionObjectDoubleData *m_baseGhoster;
 };
 
 ///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
@@ -932,6 +973,7 @@ struct btMultiBodyFloatData
 	char *m_baseName;
 	btMultiBodyLinkFloatData *m_links;
 	btCollisionObjectFloatData *m_baseCollider;
+	btCollisionObjectFloatData *m_baseGhoster;
 };
 
 #endif

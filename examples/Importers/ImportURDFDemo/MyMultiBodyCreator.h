@@ -57,6 +57,7 @@ public:
 	virtual class btGeneric6DofSpring2Constraint* createFixedJoint(int urdfLinkIndex, btRigidBody& rbA /*parent*/, btRigidBody& rbB, const btTransform& offsetInA, const btTransform& offsetInB);
 
 	virtual class btMultiBodyLinkCollider* allocateMultiBodyLinkCollider(int urdfLinkIndex, int mbLinkIndex, btMultiBody* body);
+	virtual class btMultiBodyLinkGhoster* allocateMultiBodyLinkGhoster(int urdfLinkIndex, int mbLinkIndex, btMultiBody* body);
 
 	virtual void addLinkMapping(int urdfLinkIndex, int mbLinkIndex);
 
